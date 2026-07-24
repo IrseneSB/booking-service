@@ -3,6 +3,7 @@ import {
   EntitySchema,
   type DeepPartial,
   type FindOptionsWhere,
+  type QueryDeepPartialEntity,
 } from "typeorm";
 import { AppDataSource } from "../data-source";
 
@@ -34,14 +35,15 @@ export class BaseService<T extends object> {
 
   async updateById(id: number, data: DeepPartial<T>): Promise<T | null> {
     const where: FindOptionsWhere<T> = { id } as unknown as FindOptionsWhere<T>;
-    const result = await this.repository.update(where, data as any);
+    const result = await this.repository.update(where, data as QueryDeepPartialEntity<T>);
 
     if (result.affected === 0) return null;
     return (await this.repository.findOne({ where })) ?? null;
   }
 
   async deleteById(id: number): Promise<{ success: boolean }> {
-    const result = await this.repository.delete({ id } as any);
+    const where: FindOptionsWhere<T> = { id } as unknown as FindOptionsWhere<T>;
+    const result = await this.repository.delete(where);
     return { success: !!(result.affected && result.affected > 0) };
   }
 }
