@@ -1,0 +1,27 @@
+{
+  "name": "booking-service",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "bun run index.ts",
+    "dev": "bun --hot run index.ts",
+    "migrate:db": "npx typeorm-ts-node-esm migration:run -d src/data-source.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/node": "^22.16.5",
+    "typescript": "^5.8.3"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "pg": "^8.16.3",
+    "reflect-metadata": "^0.2.2",
+    "ts-node": "^10.9.2",
+    "typeorm": "^0.3.27",
+    "uuid": "^11.1.0"
+  }
+}

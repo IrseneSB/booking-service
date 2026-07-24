@@ -1,0 +1,27 @@
+import "reflect-metadata";
+import { AppDataSource } from "./data-source";
+import { resourceRoutes } from "./routes/resource";
+
+// Merge in bookingRoutes / availabilityRoutes here as those features land.
+const routes = {
+  "/health": {
+    GET: () => Response.json({ status: "ok" }, { status: 200 }),
+  },
+  ...resourceRoutes,
+};
+
+AppDataSource.initialize()
+  .then(() => {
+    const server = Bun.serve({
+      port: Number(process.env.PORT ?? 3000),
+      routes,
+      fetch() {
+        return Response.json({ success: false, message: "Not found" }, { status: 404 });
+      },
+    });
+
+    console.log(`booking-service running at http://localhost:${server.port}`);
+  })
+  .catch((error) => {
+    console.error("Failed to initialize database connection:", error);
+  });
