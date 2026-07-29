@@ -9,8 +9,10 @@ const controller = new ResourceController();
 export const resourceRoutes = {
   "/resources": {
     GET: () => controller.list(),
+    POST: (req: Request) => controller.create(req),
   },
   "/resources/:id": {
     GET: (req: BunRequest<"/resources/:id">) => controller.getById(req),
+    PUT: (req: BunRequest<"/resources/:id">) => controller.update(req),
   },
 };
