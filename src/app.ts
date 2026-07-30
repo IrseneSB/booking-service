@@ -2,14 +2,15 @@ import "reflect-metadata";
 import { AppDataSource } from "./data-source";
 import { resourceRoutes } from "./routes/resource";
 import { bookingRoutes } from "./routes/booking";
+import { AvailabilityRoutes } from "./routes/availability";
 
-// Merge in bookingRoutes / availabilityRoutes here as those features land.
 const routes = {
   "/health": {
     GET: () => Response.json({ status: "ok" }, { status: 200 }),
   },
   ...resourceRoutes,
   ...bookingRoutes,
+  ...AvailabilityRoutes,
 };
 
 AppDataSource.initialize()
