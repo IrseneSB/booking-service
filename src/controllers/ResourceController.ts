@@ -50,4 +50,33 @@ export class ResourceController {
     return HttpResponse.success("Resource updated successfully", updated);
   }
 
+  async delete(req: BunRequest<"/resources/:id">): Promise<Response> {
+    const id = Number(req.params.id);
+
+    const existing = await this.resourceService.findById(id);
+    if (!existing) return HttpResponse.notFound("Resource not found");
+
+    await this.resourceService.deleteById(id);
+    return HttpResponse.success("Resource deleted successfully");
+  }
+
+  async block(req: BunRequest<"/resources/:id/block">): Promise<Response> {
+    const id = Number(req.params.id);
+
+    const existing = await this.resourceService.findById(id);
+    if (!existing) return HttpResponse.notFound("Resource not found");
+
+    const updated = await this.resourceService.blockResource(id);
+    return HttpResponse.success("Resource blocked successfully", updated);
+  }
+
+  async unblock(req: BunRequest<"/resources/:id/unblock">): Promise<Response> {
+    const id = Number(req.params.id);
+
+    const existing = await this.resourceService.findById(id);
+    if (!existing) return HttpResponse.notFound("Resource not found");
+
+    const updated = await this.resourceService.unblockResource(id);
+    return HttpResponse.success("Resource unblocked successfully", updated);
+  }
 }

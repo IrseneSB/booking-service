@@ -7,9 +7,15 @@ export class ResourceService extends BaseService<ResourceEntity> {
     super(ResourceSchema);
   }
 
-  // Feature owner: add createResource/updateResource/deleteResource here,
-  // plus availability-window and block/unblock methods as the feature grows.
   async createResource(data: CreateResourceForm): Promise<ResourceEntity> {
     return await this.create(data);
+  }
+
+  async blockResource(id: number) {
+    return await this.updateById(id, { is_blocked: true });
+  }
+
+  async unblockResource(id: number) {
+    return await this.updateById(id, { is_blocked: false });
   }
 }
