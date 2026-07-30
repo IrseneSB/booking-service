@@ -18,4 +18,9 @@ export const resourceRoutes = {
   "/resources/:id/unblock": {
     PATCH: (req: BunRequest<"/resources/:id/unblock">) => controller.unblock(req),
   },
+
+  "/resources/:id/availability": {
+    POST: (req: BunRequest<"/resources/:id/availability">) => controller.setAvailability(req),
+  },
+
 };

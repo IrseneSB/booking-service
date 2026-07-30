@@ -2,6 +2,7 @@ import type { BunRequest } from "bun";
 import HttpResponse from "../common/HttpResponse";
 import { ResourceService } from "../services/ResourceService";
 import type { CreateResourceForm } from "../forms/resource";
+import type { SetAvailabilityForm } from "../forms/resource";
 
 export class ResourceController {
   private resourceService = new ResourceService();
@@ -79,4 +80,20 @@ export class ResourceController {
     const updated = await this.resourceService.unblockResource(id);
     return HttpResponse.success("Resource unblocked successfully", updated);
   }
+
+  async setAvailability(req: BunRequest<"/resources/:id/availability">): Promise<Response> {
+    const id = Number(req.params.id);
+    const body = (await req.json()) as SetAvailabilityForm;
+
+    const existing = await this.resourceService.findById(id);
+    if (!existing) return HttpResponse.notFound("Resource not found");
+
+    if (!body.open_time || !body.close_time) {
+      return HttpResponse.failure("open_time and close_time are required", 400);
+    }
+
+    const updated = await this.resourceService.setAvailability(id, body);
+    return HttpResponse.success("Availability updated successfully", updated);
+  }
+
 }
