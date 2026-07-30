@@ -1,3 +1,4 @@
+import type{CancellationCheckResult} from "../forms/cancellationPolicy"
 const minimum_notice_minutes=120;
 
 export function isCancellationAllowed(startTime: Date): CancellationCheckResult {
