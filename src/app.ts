@@ -1,6 +1,8 @@
 import "reflect-metadata";
 import { AppDataSource } from "./data-source";
 import { resourceRoutes } from "./routes/resource";
+import {AvailabilityRoutes} from "./routes/availability";
+import { bookingHistoryRoutes } from "./routes/bookingHistory";
 
 // Merge in bookingRoutes / availabilityRoutes here as those features land.
 const routes = {
@@ -8,6 +10,9 @@ const routes = {
     GET: () => Response.json({ status: "ok" }, { status: 200 }),
   },
   ...resourceRoutes,
+  ...AvailabilityRoutes,
+  ...bookingHistoryRoutes,
+  ...bookingRoutes,
 };
 
 AppDataSource.initialize()
