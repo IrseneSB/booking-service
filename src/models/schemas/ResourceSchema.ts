@@ -21,6 +21,7 @@ export const ResourceSchema = new EntitySchema<ResourceEntity>({
     capacity: {
       type: "int",
     },
+<<<<<<< HEAD
     blocked: {
       type: "boolean",
       default: false,
@@ -37,4 +38,19 @@ export const ResourceSchema = new EntitySchema<ResourceEntity>({
       nullable: true,
     },
   },
+=======
+    is_blocked: {
+      type: Boolean,
+      default: false,
+    },
+    open_time: {
+      type: String,
+      nullable: true,
+    },
+    close_time: {
+      type: String,
+      nullable: true,
+    },
+  },
+>>>>>>> a4c0eb0 (Implement real availability filtering (search, isWithinAvailabilityWindow), using is_blocked/open_time/close_time from Feature 1's ResourceService)
 });
