@@ -10,16 +10,26 @@ export class AvailabilityController {
     const from = url.searchParams.get("from");
     const to = url.searchParams.get("to");
 
-    if (!type || !from || !to) {
+  if (!type || !from || !to) {
       return HttpResponse.failure("type, from, and to query params are required", 400);
+    }
+
+    const fromDate = new Date(from);
+    const toDate = new Date(to);
+
+    if (isNaN(fromDate.getTime()) || isNaN(toDate.getTime())) {
+      return HttpResponse.failure("from and to must be valid dates", 400);
+    }
+
+    if (fromDate >= toDate) {
+      return HttpResponse.failure("from must be before to", 400);
     }
 
     const results = await this.availabilityService.search({
       type,
-      from: new Date(from),
-      to: new Date(to),
+      from: fromDate,
+      to: toDate,
     });
-
     return HttpResponse.success("Availability search results", results);
   }
 }
