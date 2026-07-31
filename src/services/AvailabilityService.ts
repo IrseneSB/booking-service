@@ -1,6 +1,8 @@
 import type { AvailabilitySearchQuery, AvailabilityResult } from "../forms/availability";
 import { ResourceService } from "./ResourceService";
 import type { ResourceEntity } from "../forms/resource";
+import { AppDataSource } from "../data-source";
+import { BookingSchema } from "../models/schemas";s
 
 export class AvailabilityService {
   private resourceService = new ResourceService();
@@ -31,8 +33,8 @@ export class AvailabilityService {
     return available;
   }
 
-  // OPEN QUESTION for the team: null open_time/close_time = always available, or never bookable?
-  // Currently treated as "always available" — confirm with Feature 1's owner.
+// OPEN QUESTION for the team: null open_time/close_time = always available, or never bookable?
+// Currently treated as "always available" — confirm with Feature 1's owner.
   private isWithinAvailabilityWindow(
     resource: ResourceEntity,
     query: AvailabilitySearchQuery
@@ -53,11 +55,22 @@ export class AvailabilityService {
     return `${hours}:${minutes}`;
   }
 
-  // TODO (Feature 2): still waiting on BookingSchema + BookingService.
-  private async hasOverlappingBooking(
-    resourceId: number,
-    query: AvailabilitySearchQuery
-  ): Promise<boolean> {
-    return false;
-  }
-}
+
+private async hasOverlappingBooking(
+  resourceId: number,
+  query: AvailabilitySearchQuery
+): Promise<boolean> {
+  const bookingRepo = AppDataSource.getRepository(BookingSchema);
+
+  const overlap = await bookingRepo
+    .createQueryBuilder("booking")
+    .where("booking.resource_id = :resourceId", { resourceId })
+    .andWhere("booking.status = :status", { status: "confirmed" })
+    .andWhere("booking.start_time < :to AND booking.end_time > :from", {
+      from: query.from,
+      to: query.to,
+    })
+    .getOne();
+
+  return !!overlap;
+}}
