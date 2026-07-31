@@ -12,10 +12,14 @@ export class BookingController {
 
       const resource_id = url.searchParams.get("resource_id");
       const status = url.searchParams.get("status");
+      const from = url.searchParams.get("from");
+      const to = url.searchParams.get("to");
 
       const bookings = await this.bookingService.getBookings({
         resource_id: resource_id ? Number(resource_id) : undefined,
         status: status ?? undefined,
+        from: from ? new Date(from) : undefined,
+        to: to ? new Date(to) : undefined,
       });
 
       return HttpResponse.success(

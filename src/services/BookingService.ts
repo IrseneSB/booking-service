@@ -137,6 +137,8 @@ async createBooking(data: CreateBookingForm): Promise<BookingEntity> {
     resource_id?: number;
 
     status?: string;
+    from?: Date;
+    to?: Date;
 
   }): Promise<BookingEntity[]> {
 
@@ -161,7 +163,17 @@ async createBooking(data: CreateBookingForm): Promise<BookingEntity> {
       });
 
     }
+if (filters?.from) {
+  query.andWhere("booking.start_time >= :from", {
+    from: filters.from,
+  });
+}
 
+if (filters?.to) {
+  query.andWhere("booking.end_time <= :to", {
+    to: filters.to,
+  });
+}
     return await query.getMany();
 
   }
