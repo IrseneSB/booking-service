@@ -1,2 +1,2 @@
 export * from "./ResourceSchema";
-export * from "./BookingSchema";
+// Add "./BookingSchema" here once the Booking Core feature defines it.

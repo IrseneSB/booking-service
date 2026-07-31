@@ -1,6 +1,6 @@
 import { DataSource } from "typeorm";
 import dotenv from "dotenv";
-import { ResourceSchema , BookingSchema } from "./models/schemas";
+import { ResourceSchema } from "./models/schemas";
 
 dotenv.config();
 
@@ -16,7 +16,7 @@ export const AppDataSource = new DataSource({
   logging: false,
   entities: [
     ResourceSchema,
-    BookingSchema,
+    // Add BookingSchema here once the Booking Core feature defines it.
   ],
   subscribers: [],
   migrations: ["src/database/migrations/*.ts"],
