@@ -21,5 +21,9 @@ export const ResourceSchema = new EntitySchema<ResourceEntity>({
     capacity: {
       type: "int",
     },
+    blocked: {
+      type: "boolean",
+      default: false,
+  },
   },
 });

@@ -7,6 +7,7 @@ export interface ResourceEntity {
   name: string;
   type: string;
   capacity: number;
+  blocked: boolean;
   created_at: Date;
   updated_at: Date;
 }
