@@ -10,7 +10,7 @@ export class AvailabilityService {
   async search(query: AvailabilitySearchQuery): Promise<AvailabilityResult[]> {
     const allResources = await this.resourceService.findAll();
     const candidateResources = allResources.filter(
-      (r) => r.type === query.type && r.is_blocked === false
+      (r) => r.type === query.type && r.blocked === false
     );
 
     const available: AvailabilityResult[] = [];
