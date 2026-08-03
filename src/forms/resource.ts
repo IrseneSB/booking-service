@@ -4,7 +4,7 @@ export interface ResourceEntity {
   name: string;
   type: string;
   capacity: number;
-  is_blocked: boolean;
+  blocked: boolean;
   open_time: string | null;
   close_time: string | null;
   created_at: Date;

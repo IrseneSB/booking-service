@@ -2,7 +2,6 @@ import { BaseService } from "./BaseService";
 import { ResourceSchema } from "../models/schemas";
 import type { ResourceEntity, CreateResourceForm } from "../forms/resource";
 
-
 export class ResourceService extends BaseService<ResourceEntity> {
   constructor() {
     super(ResourceSchema);
@@ -13,14 +12,12 @@ export class ResourceService extends BaseService<ResourceEntity> {
   }
 
   async blockResource(id: number) {
-    return await this.updateById(id, { is_blocked: true });
+    return await this.updateById(id, { blocked: true });
   }
 
   async unblockResource(id: number) {
-    return await this.updateById(id, { is_blocked: false });
+    return await this.updateById(id, { blocked: false });
   }
-  
-  
 
   async setAvailability(id: number, data: { open_time: string; close_time: string }) {
     return await this.updateById(id, data);
