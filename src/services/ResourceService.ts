@@ -13,14 +13,12 @@ export class ResourceService extends BaseService<ResourceEntity> {
     return await this.create(data);
   }
   async blockResource(id: number) : Promise<ResourceEntity | null> {
-  return await this.updateById(
-    id,
-    {
+  await this.updateById(id, {
       blocked: true,
     }
   );
 
-  return this.repository.findOneBy({ id });
+  return  this.repository.findOneBy({ id });
 }
 
 

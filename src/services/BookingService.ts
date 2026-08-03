@@ -1,11 +1,13 @@
 import type { BookingEntity, CreateBookingForm } from "../forms/booking";
 import { BookingSchema, ResourceSchema } from "../models/schemas";
+import { AppDataSource } from "../data-source";
 import { BaseService } from "./BaseService";
 
 export class BookingService extends BaseService<BookingEntity> {
     resourceRepository: any;
 constructor() {
 super(BookingSchema);
+this.resourceRepository = AppDataSource.getRepository(ResourceSchema);
 }
 
 async createBooking(data: CreateBookingForm): Promise<BookingEntity> {
@@ -28,6 +30,10 @@ async createBooking(data: CreateBookingForm): Promise<BookingEntity> {
 
       throw new Error("Resource not found.");
 
+    }
+    if (resource.blocked) {
+
+      throw new Error("Resource is blocked and cannot be booked."); 
     }
 
     // TODO:
