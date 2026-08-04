@@ -4,11 +4,7 @@ export interface ResourceEntity {
   name: string;
   type: string;
   capacity: number;
-<<<<<<< HEAD
   blocked: boolean;
-=======
-  is_blocked: boolean;
->>>>>>> a4c0eb0 (Implement real availability filtering (search, isWithinAvailabilityWindow), using is_blocked/open_time/close_time from Feature 1's ResourceService)
   open_time: string | null;
   close_time: string | null;
   created_at: Date;

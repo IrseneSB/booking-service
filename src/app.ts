@@ -28,5 +28,4 @@ AppDataSource.initialize()
     console.log(`booking-service running at http://localhost:${server.port}`);
   })
   .catch((error) => {
-    console.error("Failed to initialize database connection:", error);
-  });
+    console.error("Failed to initialize database connection:", error);});
