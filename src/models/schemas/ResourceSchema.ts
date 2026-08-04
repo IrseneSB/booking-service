@@ -25,5 +25,16 @@ export const ResourceSchema = new EntitySchema<ResourceEntity>({
       type: "boolean",
       default: false,
   },
+      type: Boolean,
+      default: false,
+    },
+    open_time: {
+      type: String,
+      nullable: true,
+    },
+    close_time: {
+      type: String,
+      nullable: true,
+    },
   },
 });

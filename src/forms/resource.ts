@@ -1,6 +1,3 @@
-// Owned by: Resource Management feature.
-// Extend with availability-window and blocked-state fields as you build those out.
-
 export interface ResourceEntity {
   id: number;
   uuid: string;
@@ -8,6 +5,8 @@ export interface ResourceEntity {
   type: string;
   capacity: number;
   blocked: boolean;
+  open_time: string | null;
+  close_time: string | null;
   created_at: Date;
   updated_at: Date;
 }
@@ -16,4 +15,9 @@ export interface CreateResourceForm {
   name: string;
   type: string;
   capacity: number;
+}
+
+export interface SetAvailabilityForm {
+  open_time: string;
+  close_time: string;
 }
