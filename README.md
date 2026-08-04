@@ -70,7 +70,36 @@ curl http://localhost:3000/resources/1
 
 The rest of the endpoints (resource CRUD, availability windows, blocking, bookings, search, cancellation policy, history) are being built out across three feature branches — see `ASSIGNMENT.md`. Add curl examples for each endpoint here as you build it.
 
-## Notes
+### Resource management (Feature 1)
 
-- No auth on this service — that's a separate, later assignment. Don't add auth checks here.
-- Storage is Postgres, not in-memory — restart-safe, but you're responsible for running migrations.
+Create a resource:
+```bash
+curl.exe -X POST http://localhost:3000/resources -H "Content-Type: application/json" -d '{"name": "Room A", "type": "room", "capacity": 4}'
+```
+
+Update a resource:
+```bash
+curl.exe -X PUT http://localhost:3000/resources/1 -H "Content-Type: application/json" -d '{"capacity": 10}'
+```
+
+Delete a resource:
+```bash
+curl.exe -X DELETE http://localhost:3000/resources/1
+```
+
+Block a resource (mark as unbookable):
+```bash
+curl.exe -X PATCH http://localhost:3000/resources/1/block
+```
+
+Unblock a resource:
+```bash
+curl.exe -X PATCH http://localhost:3000/resources/1/unblock
+```
+
+Set a resource's availability hours:
+```bash
+curl.exe -X POST http://localhost:3000/resources/1/availability -H "Content-Type: application/json" -d '{"open_time": "09:00", "close_time": "17:00"}'
+```
+
+## Notes

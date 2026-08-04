@@ -21,5 +21,17 @@ export const ResourceSchema = new EntitySchema<ResourceEntity>({
     capacity: {
       type: "int",
     },
+    blocked: {
+      type: Boolean,
+      default: false,
+    },
+    open_time: {
+      type: String,
+      nullable: true,
+    },
+    close_time: {
+      type: String,
+      nullable: true,
+    },
   },
 });
