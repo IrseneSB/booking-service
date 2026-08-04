@@ -1,6 +1,6 @@
 import { DataSource } from "typeorm";
 import dotenv from "dotenv";
-import { ResourceSchema } from "./models/schemas";
+import { BookingSchema, ResourceSchema } from "./models/schemas";
 
 dotenv.config();
 
@@ -11,12 +11,13 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
-  schema: "booking_service",
+  schema: "public",
   synchronize: false,
   logging: false,
   entities: [
     ResourceSchema,
-    // Add BookingSchema here once the Booking Core feature defines it.
+    BookingSchema, 
+    
   ],
   subscribers: [],
   migrations: ["src/database/migrations/*.ts"],
