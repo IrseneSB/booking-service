@@ -2,14 +2,17 @@ import "reflect-metadata";
 import { AppDataSource } from "./data-source";
 import { resourceRoutes } from "./routes/resource";
 import { bookingRoutes } from "./routes/booking";
+import { AvailabilityRoutes } from "./routes/availability";
+import { bookingHistoryRoutes } from "./routes/bookingHistory";
 
-// Merge in bookingRoutes / availabilityRoutes here as those features land.
 const routes = {
   "/health": {
     GET: () => Response.json({ status: "ok" }, { status: 200 }),
   },
   ...resourceRoutes,
   ...bookingRoutes,
+  ...AvailabilityRoutes,
+  ...bookingHistoryRoutes,
 };
 
 AppDataSource.initialize()
@@ -25,5 +28,4 @@ AppDataSource.initialize()
     console.log(`booking-service running at http://localhost:${server.port}`);
   })
   .catch((error) => {
-    console.error("Failed to initialize database connection:", error);
-  });
+    console.error("Failed to initialize database connection:", error);});

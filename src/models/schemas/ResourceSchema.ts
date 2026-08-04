@@ -22,9 +22,6 @@ export const ResourceSchema = new EntitySchema<ResourceEntity>({
       type: "int",
     },
     blocked: {
-      type: "boolean",
-      default: false,
-  },
       type: Boolean,
       default: false,
     },
