@@ -1,57 +1,38 @@
-import jwt from "jsonwebtoken";
-import type { CreateUserForm } from "../forms/user";
-import HttpResponse from "../common/HttpResponse";
-import { UserService } from "../services/UserService";
+import { BaseService } from "./BaseService";
+import { UserSchema } from "../models/schemas/UserSchema";
+import type { UserEntity, CreateUserForm } from "../forms/user";
 
-export class AuthController {
-  private userService = new UserService();
-
-  async signup(req: Request): Promise<Response> {
-    const body = (await req.json()) as CreateUserForm;
-
-    if (!body.email || !body.password) {
-      return HttpResponse.failure("Email and password are required", 400);
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(body.email)) {
-      return HttpResponse.failure("Invalid email format", 400);
-    }
-
-    if (body.password.length < 8) {
-      return HttpResponse.failure("Password must be at least 8 characters", 400);
-    }
-
-    const user = await this.userService.signup(body);
-
-    if (!user) {
-      return HttpResponse.failure("Email already in use", 409);
-    }
-
-    const { password_hash, ...safeUser } = user;
-    return HttpResponse.success("User created successfully", safeUser, 201);
+export class UserService extends BaseService<UserEntity> {
+  constructor() {
+    super(UserSchema);
   }
 
-  async signin(req: Request): Promise<Response> {
-    const body = (await req.json()) as { email: string; password: string };
-
-    if (!body.email || !body.password) {
-      return HttpResponse.failure("Email and password are required", 400);
+  async signup(data: CreateUserForm): Promise<UserEntity | null> {
+    const existing = await this.findByField("email", data.email);
+    if (existing) {
+      return null;
     }
 
-    const user = await this.userService.signin(body);
+    const password_hash = await Bun.password.hash(data.password, {
+      algorithm: "bcrypt",
+      cost: 10,
+    });
 
+    const user = await this.create({ email: data.email, password_hash });
+    return user;
+  }
+
+  async signin(data: { email: string; password: string }): Promise<UserEntity | null> {
+    const user = await this.findByField("email", data.email);
     if (!user) {
-      return HttpResponse.failure("Invalid email or password", 401);
+      return null;
     }
 
-    const token = jwt.sign(
-      { userId: user.id },
-      process.env.JWT_SECRET as string,
-      { expiresIn: "15m" }
-    );
+    const isValid = await Bun.password.verify(data.password, user.password_hash);
+    if (!isValid) {
+      return null;
+    }
 
-    const { password_hash, ...safeUser } = user;
-    return HttpResponse.success("Signed in successfully", { user: safeUser, token });
+    return user;
   }
 }

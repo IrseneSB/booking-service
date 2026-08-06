@@ -1,3 +1,6 @@
+import { AuthController } from "../controllers/AuthController";
+
+const controller = new AuthController();
 
 export const authRoutes = {
   "/auth/signup": {
