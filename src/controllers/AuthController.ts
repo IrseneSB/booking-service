@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import type { CreateUserForm } from "../forms/user";
 import HttpResponse from "../common/HttpResponse";
 import { UserService } from "../services/UserService";
@@ -31,5 +32,26 @@ export class AuthController {
     return HttpResponse.success("User created successfully", safeUser, 201);
   }
 
+  async signin(req: Request): Promise<Response> {
+    const body = (await req.json()) as { email: string; password: string };
 
+    if (!body.email || !body.password) {
+      return HttpResponse.failure("Email and password are required", 400);
+    }
+
+    const user = await this.userService.signin(body);
+
+    if (!user) {
+      return HttpResponse.failure("Invalid email or password", 401);
+    }
+
+    const token = jwt.sign(
+      { userId: user.id },
+      process.env.JWT_SECRET as string,
+      { expiresIn: "15m" }
+    );
+
+    const { password_hash, ...safeUser } = user;
+    return HttpResponse.success("Signed in successfully", { user: safeUser, token });
+  }
 }
