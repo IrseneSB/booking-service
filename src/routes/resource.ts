@@ -1,5 +1,7 @@
 import type { BunRequest } from "bun";
 import { ResourceController } from "../controllers/ResourceController";
+import { requireAuth } from "../middleware/requireAuth";
+
 const controller = new ResourceController();
 
 export const resourceRoutes = {
@@ -13,14 +15,13 @@ export const resourceRoutes = {
     DELETE: (req: BunRequest<"/resources/:id">) => controller.delete(req),
   },
   "/resources/:id/block": {
-    PATCH: (req: BunRequest<"/resources/:id/block">) => controller.block(req),
+    PATCH: requireAuth((req: BunRequest<"/resources/:id/block">, user) => controller.block(req, user)),
   },
   "/resources/:id/unblock": {
-    PATCH: (req: BunRequest<"/resources/:id/unblock">) => controller.unblock(req),
+    PATCH: requireAuth((req: BunRequest<"/resources/:id/unblock">, user) => controller.unblock(req, user)),
   },
 
   "/resources/:id/availability": {
     POST: (req: BunRequest<"/resources/:id/availability">) => controller.setAvailability(req),
   },
-
 };

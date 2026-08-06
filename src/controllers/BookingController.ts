@@ -2,6 +2,7 @@ import type { BunRequest } from "bun";
 import HttpResponse from "../common/HttpResponse";
 import { BookingService } from "../services/BookingService";
 import type { CreateBookingForm } from "../forms/booking";
+import type { DecodedToken } from "../common/AuthTypes";
 
 export class BookingController {
   private bookingService = new BookingService();
@@ -34,26 +35,18 @@ export class BookingController {
     }
   }
 
-  async create(req: Request): Promise<Response> {
-    try {
-      const body = await req.json();
+  async create(req: Request, user: DecodedToken): Promise<Response> {
+    const body = (await req.json()) as CreateBookingForm;
 
-      const booking = await this.bookingService.createBooking(body as CreateBookingForm);
+    const booking = await this.bookingService.create({
+      ...body,
+      user_id: user.userId,
+    });
 
-      return HttpResponse.success(
-        "Booking created successfully",
-        booking,
-        201
-      );
-    } catch (error) {
-      return HttpResponse.failure(
-        error instanceof Error ? error.message : "Something went wrong",
-        400
-      );
-    }
+    return HttpResponse.success("Booking created successfully", booking, 201);
   }
 
-  async update(req: BunRequest<"/bookings/:id">): Promise<Response> {
+  async update(req: BunRequest<"/bookings/:id">, user: DecodedToken): Promise<Response> {
     try {
       const id = Number(req.params.id);
       const body = await req.json();
@@ -76,7 +69,7 @@ export class BookingController {
     }
   }
 
-  async cancel(req: BunRequest<"/bookings/:id/cancel">): Promise<Response> {
+  async cancel(req: BunRequest<"/bookings/:id/cancel">, user: DecodedToken): Promise<Response> {
     try {
       const id = Number(req.params.id);
 

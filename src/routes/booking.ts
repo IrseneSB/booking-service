@@ -1,20 +1,18 @@
 import type { BunRequest } from "bun";
 import { BookingController } from "../controllers/BookingController";
+import { requireAuth } from "../middleware/requireAuth";
 
 const controller = new BookingController();
 
 export const bookingRoutes = {
   "/bookings": {
     GET: (req: BunRequest<"/bookings">) => controller.list(req),
-    POST: (req: Request) => controller.create(req),
+    POST: requireAuth((req: Request, user) => controller.create(req, user)),
   },
-
   "/bookings/:id": {
-    PUT: (req: BunRequest<"/bookings/:id">) => controller.update(req),
+    PUT: requireAuth((req: BunRequest<"/bookings/:id">, user) => controller.update(req, user)),
   },
-
   "/bookings/:id/cancel": {
-    PATCH: (req: BunRequest<"/bookings/:id/cancel">) =>
-      controller.cancel(req),
+    POST: requireAuth((req: BunRequest<"/bookings/:id/cancel">, user) => controller.cancel(req, user)),
   },
 };
