@@ -20,7 +20,7 @@ bun install
 cp .env.example .env
 ```
 
-Update `.env` with your local Postgres credentials, then create the database:
+Update `.env` with your local Postgres credentials, then create the database. You'll also need to set `JWT_SECRET` (any long random string — generate one with `openssl rand -base64 32`) and `BCRYPT_COST` (bcrypt cost factor for password hashing, default `10`):
 
 ```bash
 createdb booking_service
@@ -116,7 +116,83 @@ Cancellation is only allowed when there are at least 2 hours before the booking'
 
 The rest of the endpoints (resource CRUD, availability windows, blocking, bookings, search, cancellation policy, history) are being built out across three feature branches — see `ASSIGNMENT.md`. Add curl examples for each endpoint here as you build it.
 
+## Authentication
+
+Auth endpoints issue and verify JWTs. Access tokens expire after **15 minutes**. There is no refresh-token flow in this pass — when a token expires, the client re-authenticates via `/auth/signin`.
+
+Protected endpoints require an `Authorization: Bearer <token>` header. Currently protected: `POST/PUT /bookings`, `POST /bookings/:id/cancel`, `PATCH /resources/:id/block`, `PATCH /resources/:id/unblock`. `GET` endpoints (`/bookings`, `/resources`) remain public — read access doesn't require identifying the caller for this pass.
+
+#### Signup
+
+```bash
+curl -X POST http://localhost:3000/auth/signup \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@example.com","password":"password123"}'
+```
+
+Response (`201`):
+```json
+{
+  "success": true,
+  "message": "User created successfully",
+  "data": { "id": 1, "uuid": "...", "email": "test@example.com", "created_at": "...", "updated_at": "..." }
+}
+```
+
+Duplicate email returns `409`:
+```json
+{ "success": false, "message": "Email already in use" }
+```
+
+#### Signin
+
+```bash
+curl -X POST http://localhost:3000/auth/signin \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@example.com","password":"password123"}'
+```
+
+Response (`200`):
+```json
+{
+  "success": true,
+  "message": "Signed in successfully",
+  "data": {
+    "user": { "id": 1, "uuid": "...", "email": "test@example.com", "created_at": "...", "updated_at": "..." },
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  }
+}
+```
+
+Bad credentials return `401` (same message whether the email or password was wrong, to avoid leaking which emails are registered):
+```json
+{ "success": false, "message": "Invalid email or password" }
+```
+
+#### Protected endpoint example — blocking a resource
+
+Without a token (`401`):
+```bash
+curl -X PATCH http://localhost:3000/resources/1/block
+```
+```json
+{ "success": false, "message": "Unauthorized" }
+```
+
+With a valid token (`200`):
+```bash
+curl -X PATCH http://localhost:3000/resources/1/block \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+```
+```json
+{
+  "success": true,
+  "message": "Resource blocked successfully",
+  "data": { "id": 1, "name": "Salle A", "blocked": true, ... }
+}
+```
+
 ## Notes
 
-- No auth on this service — that's a separate, later assignment. Don't add auth checks here.
+- - Auth: bcrypt for password hashing (cost factor configurable via `BCRYPT_COST`), JWT for sessions (`JWT_SECRET` required, 15min expiry, no refresh-token flow — see Authentication section).
 - Storage is Postgres, not in-memory — restart-safe, but you're responsible for running migrations.

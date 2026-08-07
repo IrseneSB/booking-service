@@ -13,10 +13,10 @@ export class UserService extends BaseService<UserEntity> {
       return null;
     }
 
-    const password_hash = await Bun.password.hash(data.password, {
-      algorithm: "bcrypt",
-      cost: 10,
-    });
+  const password_hash = await Bun.password.hash(data.password, {
+    algorithm: "bcrypt",
+    cost: Number(process.env.BCRYPT_COST) || 10,
+  });
 
     const user = await this.create({ email: data.email, password_hash });
     return user;
