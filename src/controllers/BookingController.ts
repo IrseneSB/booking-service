@@ -37,30 +37,38 @@ export class BookingController {
 
   async create(req: Request, user: DecodedToken): Promise<Response> {
     const body = (await req.json()) as CreateBookingForm;
-
     const booking = await this.bookingService.create({
       ...body,
       user_id: user.userId,
-    });
+      });
 
     return HttpResponse.success("Booking created successfully", booking, 201);
+    
   }
 
   async update(req: BunRequest<"/bookings/:id">, user: DecodedToken): Promise<Response> {
+
     try {
       const id = Number(req.params.id);
-      const body = await req.json();
-
-      const booking = await this.bookingService.updateBooking(id, body as Partial<CreateBookingForm>);
+      const booking = await this.bookingService.findById(id);
 
       if (!booking) {
         return HttpResponse.notFound("Booking not found");
       }
 
+      if(booking.user_id!==user.userId){
+        return HttpResponse.failure("Forbidden", 403);
+      }
+
+      const body = await req.json();
+
+      const updatedbooking = await this.bookingService.updateBooking(id, body as Partial<CreateBookingForm>);
+
       return HttpResponse.success(
         "Booking updated successfully",
-        booking
+        updatedbooking
       );
+     
     } catch (error) {
       return HttpResponse.failure(
         error instanceof Error ? error.message : "Something went wrong",
@@ -72,17 +80,24 @@ export class BookingController {
   async cancel(req: BunRequest<"/bookings/:id/cancel">, user: DecodedToken): Promise<Response> {
     try {
       const id = Number(req.params.id);
-
-      const booking = await this.bookingService.cancelBooking(id);
+      const booking = await this.bookingService.findById(id);
 
       if (!booking) {
         return HttpResponse.notFound("Booking not found");
       }
+      if(user.userId!==booking.user_id){
+        return HttpResponse.failure("Forbidden", 403)
+      }
+
+      const cancelledbooking = await this.bookingService.cancelBooking(id);
 
       return HttpResponse.success(
-        "Booking cancelled successfully",
-        booking
+      "Booking cancelled successfully",
+      cancelledbooking
       );
+      
+
+      
     } catch (error) {
       return HttpResponse.failure(
         error instanceof Error ? error.message : "Something went wrong",
