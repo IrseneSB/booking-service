@@ -21,7 +21,7 @@ export class ResourceController {
     return HttpResponse.success("Resource fetched successfully", resource);
   }
 
-  async create(req: Request): Promise<Response> {
+  async create(req: Request, user: DecodedToken): Promise<Response> {
     const body = (await req.json()) as CreateResourceForm;
 
     if (!body.name || !body.type) {
@@ -35,7 +35,7 @@ export class ResourceController {
     return HttpResponse.success("Resource created successfully", resource, 201);
   }
 
-  async update(req: BunRequest<"/resources/:id">): Promise<Response> {
+  async update(req: BunRequest<"/resources/:id">, user: DecodedToken): Promise<Response> {
     const id = Number(req.params.id);
     const body = (await req.json()) as Partial<CreateResourceForm>;
 
@@ -50,7 +50,7 @@ export class ResourceController {
     return HttpResponse.success("Resource updated successfully", updated);
   }
 
-  async delete(req: BunRequest<"/resources/:id">): Promise<Response> {
+  async delete(req: BunRequest<"/resources/:id">, user: DecodedToken): Promise<Response> {
     const id = Number(req.params.id);
 
     const existing = await this.resourceService.findById(id);
@@ -80,7 +80,7 @@ export class ResourceController {
     return HttpResponse.success("Resource unblocked successfully", updated);
   }
 
-  async setAvailability(req: BunRequest<"/resources/:id/availability">): Promise<Response> {
+  async setAvailability(req: BunRequest<"/resources/:id/availability">, user: DecodedToken): Promise<Response> {
     const id = Number(req.params.id);
     const body = (await req.json()) as SetAvailabilityForm;
 

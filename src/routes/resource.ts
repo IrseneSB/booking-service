@@ -6,13 +6,13 @@ const controller = new ResourceController();
 
 export const resourceRoutes = {
   "/resources": {
-    GET: () => controller.list(),
-    POST: (req: Request) => controller.create(req),
+    GET:() => controller.list(),
+    POST: requireAuth((req: Request) => controller.create(req,user)),
   },
   "/resources/:id": {
-    GET: (req: BunRequest<"/resources/:id">) => controller.getById(req),
-    PUT: (req: BunRequest<"/resources/:id">) => controller.update(req),
-    DELETE: (req: BunRequest<"/resources/:id">) => controller.delete(req),
+    GET: (req: BunRequest<"/resources/:id">,user) => controller.getById(req,user),
+    PUT: requireAuth((req: BunRequest<"/resources/:id">,user) => controller.update(req,user)),
+    DELETE:requireAuth( (req: BunRequest<"/resources/:id">,user) => controller.delete(req,user)),
   },
   "/resources/:id/block": {
     PATCH: requireAuth((req: BunRequest<"/resources/:id/block">, user) => controller.block(req, user)),
@@ -22,6 +22,6 @@ export const resourceRoutes = {
   },
 
   "/resources/:id/availability": {
-    POST: (req: BunRequest<"/resources/:id/availability">) => controller.setAvailability(req),
+    POST: requireAuth((req: BunRequest<"/resources/:id/availability">,user) => controller.setAvailability(req,user)),
   },
 };

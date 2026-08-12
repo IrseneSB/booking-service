@@ -8,7 +8,7 @@ export class UserService extends BaseService<UserEntity> {
   }
 
   async signup(data: CreateUserForm): Promise<UserEntity | null> {
-    const existing = await this.findByField("email", data.email);
+    const existing = await this.findByField("email", data.email.toLowerCase());
     if (existing) {
       return null;
     }
@@ -18,7 +18,7 @@ export class UserService extends BaseService<UserEntity> {
     cost: Number(process.env.BCRYPT_COST) || 10,
   });
 
-    const user = await this.create({ email: data.email, password_hash });
+    const user = await this.create({ email: data.email.toLowerCase(), password_hash });
     return user;
   }
 
