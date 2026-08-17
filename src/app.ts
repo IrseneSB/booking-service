@@ -4,6 +4,7 @@ import { resourceRoutes } from "./routes/resource";
 import { bookingRoutes } from "./routes/booking";
 import { AvailabilityRoutes } from "./routes/availability";
 import { bookingHistoryRoutes } from "./routes/bookingHistory";
+import { authRoutes } from "./routes/auth"; 
 
 const routes = {
   "/health": {
@@ -13,6 +14,7 @@ const routes = {
   ...bookingRoutes,
   ...AvailabilityRoutes,
   ...bookingHistoryRoutes,
+  ...authRoutes, 
 };
 
 AppDataSource.initialize()

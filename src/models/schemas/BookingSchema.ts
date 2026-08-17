@@ -3,37 +3,37 @@ import { baseColumnOptions } from "./BaseSchema";
 import type { BookingEntity } from "../../forms/booking";
 
 export const BookingSchema = new EntitySchema<BookingEntity>({
-name: "Booking",
-tableName: "bookings",
+  name: "Booking",
+  tableName: "bookings",
 
-columns: {
-...baseColumnOptions,
+  columns: {
+    ...baseColumnOptions,
 
-id: {
-type: "int",
-primary: true,
-generated: "increment",
-},
+    id: {
+      type: "int",
+      primary: true,
+      generated: "increment",
+    },
 
-resource_id: {
-type: "int",
-},
+    resource_id: {
+      type: "int",
+    },
 
-booked_by: {
-type: String,
-},
+    user_id: {
+      type: "int",
+    },
 
-start_time: {
-type: "timestamp",
-},
+    start_time: {
+      type: "timestamp",
+    },
 
-end_time: {
-type: "timestamp",
-},
+    end_time: {
+      type: "timestamp",
+    },
 
-status: {
-type: String,
-default: "confirmed",
-},
-},
+    status: {
+      type: String,
+      default: "confirmed",
+    },
+  },
 });

@@ -3,7 +3,7 @@ export interface BookingEntity {
   uuid: string;
 
   resource_id: number;
-  booked_by: string;
+  user_id: number;
 
   start_time: Date;
   end_time: Date;
@@ -13,12 +13,10 @@ export interface BookingEntity {
   created_at: Date;
   updated_at: Date;
 }
-export interface CreateBookingForm {
 
+export interface CreateBookingForm {
   resource_id: number;
-  booked_by: string;
- 
+
   start_time: Date;
   end_time: Date;
-
 }
