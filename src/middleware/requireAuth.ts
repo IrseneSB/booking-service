@@ -19,6 +19,7 @@ export function requireAuth<Req extends Request>(
       const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as DecodedToken;
       return handler(req, decoded);
     } catch (error) {
+      console.error("JWT verify failed:", error); // ← ligne ajoutée temporairement
       return HttpResponse.failure("Unauthorized", 401);
     }
   };

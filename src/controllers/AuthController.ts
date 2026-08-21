@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import type { CreateUserForm } from "../forms/user";
 import HttpResponse from "../common/HttpResponse";
 import { UserService } from "../services/UserService";
+import type { DecodedToken } from "../common/AuthTypes";
 
 export class AuthController {
   private userService = new UserService();
@@ -53,5 +54,16 @@ export class AuthController {
 
     const { password_hash, ...safeUser } = user;
     return HttpResponse.success("Signed in successfully", { user: safeUser, token });
+  }
+
+  async me(req: Request, user: DecodedToken): Promise<Response> {
+    const fullUser = await this.userService.findById(user.userId);
+
+    if (!fullUser) {
+      return HttpResponse.failure("User not found", 404);
+    }
+
+    const { password_hash, ...safeUser } = fullUser;
+    return HttpResponse.success("Authenticated user", safeUser);
   }
 }
